@@ -1,0 +1,32 @@
+{
+  "name": "FastAPI Dev",
+  "context": "..",
+  "dockerFile": "../Dockerfile",
+  "runArgs": [
+    "--name",
+    "episode__dev"
+  ],
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.shell.linux": "/usr/bin/bash",
+        "terminal.integrated.profiles.linux": {
+          "bash": {
+            "path": "bash",
+            "icon": "terminal-bash"
+          }
+        }
+      },
+      "extensions": [
+        "ms-python.python",
+        "hashicorp.terraform",
+        "ms-python.black-formatter"
+      ]
+    }
+  },
+  "forwardPorts": [
+    8000
+  ],
+  "remoteUser": "vscode",
+  "postCreateCommand": "pip install -e ./app && echo 'parse_git_branch() { git branch 2>/dev/null | grep \"^*\" | awk \"{print \\$2}\"; }' >> ~/.bashrc && echo 'export PS1=\"\\u@\\h:\\w \\[\\033[32m\\]\\$(parse_git_branch)\\[\\033[00m\\]\\$ \"' >> ~/.bashrc"
+}
