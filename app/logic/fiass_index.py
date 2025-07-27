@@ -31,5 +31,5 @@ def create_faiss_index(story_id: str, docs_path: str, save_path: str):
 # Example usage
 if __name__ == "__main__":
     create_faiss_index(
-        story_id="mystery_mansion", docs_path="./app/story_docs", save_path="./vector_db/mystery_mansion"
+        story_id="mystery_mansion", docs_path="./app/story_docs", save_path="./app/vector_db/mystery_mansion"
     )
