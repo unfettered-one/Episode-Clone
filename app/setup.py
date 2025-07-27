@@ -12,6 +12,8 @@ setup(
         "openai==1.97.1",
         "langchain==0.3.27",
         "tiktoken==0.9.0",
+        "langchain-community==0.3.27",
+        "sentence-transformers"
     ],
     entry_points={
         "console_scripts": [],
