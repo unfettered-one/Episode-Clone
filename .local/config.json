@@ -1,0 +1,4 @@
+{
+    "story_docs_path": "./app/story_docs",
+    "vector_db_path": "./app/vector_db"
+}
