@@ -7,7 +7,12 @@ RUN apt-get update && apt-get install -y \
     unzip \
     curl \
     git \
+    sudo \
+    nano \
     && apt-get clean
+
+RUN echo "vscode ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
 SHELL ["/bin/bash", "-c"]
 # Install Terraform
 RUN wget https://releases.hashicorp.com/terraform/1.7.5/terraform_1.7.5_linux_amd64.zip && \
