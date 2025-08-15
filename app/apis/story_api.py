@@ -19,6 +19,6 @@ async def get_stories():
 
 @router.post("/stories/next")
 async def post_next(payload: StoryPayload = Body(...)):
-    agent = await agent_manager.get_agent(payload.story_id, "default")
+    agent = await agent_manager.get_agent(payload.story_id, payload.session_id)
     result = await agent.generate_next(payload.user_choice)
     return result

@@ -23,7 +23,7 @@ class Stories(BaseModel):
 class StoryPayload(BaseModel):
     story_id: str = Field(alias="storyId")
     user_choice: str = Field(alias="userChoice")
-
+    session_id: str = Field(alias="sessionId")
     model_config = {
         "from_attributes": True,
         "extra": "forbid",

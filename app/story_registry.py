@@ -1,5 +1,6 @@
 stories = {
     "mystery_mansion": {
+        
         "id": "mystery_mansion",
         "title": "Mystery at the Old Mansion",
         "description": "A detective investigates a haunted mansion full of secrets.",
