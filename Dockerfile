@@ -28,17 +28,3 @@ USER vscode
 WORKDIR /workspace
 
 EXPOSE 8000
-# RUN echo 'parse_git_branch() { git branch 2>/dev/null | grep "^*" | awk "{print \\$2}"; }' >> /home/vscode/.bashrc && \
-#     echo 'export PS1="\\u@\\h:\\w \\[\\033[32m\\]\\$(parse_git_branch)\\[\\033[00m\\]\\$ "' >> /home/vscode/.bashrc
-# Set Git branch in prompt for both bash and sh
-# RUN echo 'parse_git_branch() { git branch 2>/dev/null | grep "^*" | awk "{print \\$2}"; }' >> /home/vscode/.bashrc && \
-#     echo 'export PS1="\\u@\\h:\\w \\[\\033[32m\\]\\$(parse_git_branch)\\[\\033[00m\\]\\$ "' >> /home/vscode/.bashrc && \
-#     echo 'export PS1="\\u@\\h:\\w `git rev-parse --abbrev-ref HEAD 2>/dev/null`\\$ "' >> /home/vscode/.profile
-
-# Set prompt in bash with dynamic git branch
-RUN echo 'parse_git_branch() { git branch 2>/dev/null | grep "^*" | awk "{print \$2}"; }' >> /home/vscode/.bashrc && \
-    echo 'export PS1="\\u@\\h:\\w \\[\\033[32m\\]\\$(parse_git_branch)\\[\\033[00m\\]\\$ "' >> /home/vscode/.bashrc && \
-    \
-    # Set prompt in sh (branch resolved once at shell start)
-    echo 'BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)' >> /home/vscode/.profile && \
-    echo 'export PS1="\\u@\\h:\\w ($BRANCH)\\$ "' >> /home/vscode/.profile

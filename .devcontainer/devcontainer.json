@@ -9,7 +9,6 @@
   "customizations": {
     "vscode": {
       "settings": {
-        "terminal.integrated.shell.linux": "/usr/bin/bash",
         "terminal.integrated.defaultProfile.linux": "bash",
         "terminal.integrated.tabs.defaultColor": "terminal.ansiGreen",
         "terminal.integrated.profiles.linux": {
@@ -17,6 +16,9 @@
             "path": "bash",
             "icon": "terminal-bash"
           }
+        },
+        "terminal.integrated.env.linux": {
+          "PROMPT_COMMAND": "BRANCH=$(git branch 2>/dev/null | grep '^*' | awk '{print $2}'); PS1='\\[\\033[1;32m\\]\\u\\[\\033[0m\\]@\\[\\033[1;34m\\]\\h\\[\\033[0m\\] 📂 \\[\\033[1;36m\\]\\w \\[\\033[0;33m\\]🌿 ('\"$BRANCH\"')\\[\\033[0m\\]\\$ '"
         }
       },
       "extensions": [
@@ -30,5 +32,5 @@
     8000
   ],
   "remoteUser": "vscode",
-  "postCreateCommand": "pip install -e ./app && echo 'parse_git_branch() { git branch 2>/dev/null | grep \"^*\" | awk \"{print \\$2}\"; }' >> ~/.bashrc && echo 'export PS1=\"\\u@\\h:\\w \\[\\033[32m\\]\\$(parse_git_branch)\\[\\033[00m\\]\\$ \"' >> ~/.bashrc"
+  "postCreateCommand": "pip install -e ./app"
 }
