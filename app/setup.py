@@ -13,7 +13,12 @@ setup(
         "langchain==0.3.27",
         "tiktoken==0.9.0",
         "langchain-community==0.3.27",
-        "sentence-transformers"
+        "sentence-transformers",
+        "langchain-huggingface",
+        "langchain-openai==0.3.28",
+        "huggingface_hub==0.34.1",
+        "google-genai==1.30.0"
+
     ],
     entry_points={
         "console_scripts": [],

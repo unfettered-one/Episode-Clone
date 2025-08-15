@@ -3,6 +3,7 @@ import json
 import logging
 
 from dotenv import load_dotenv
+
 load_dotenv()
 
 LOGGER = logging.getLogger(__name__)
@@ -15,6 +16,10 @@ class Settings:
 
     def __init__(self) -> None:
         self._config = {}
+        self._openapi_key = os.getenv("OPENAI_API_KEY", None)
+        self._huggingface_token = os.getenv("HUGGINGFACEHUB_API_TOKEN", None)
+        self._gemini_key = os.getenv("GEMINI_API_KEY", None)
+
         self.load_env_variable()
 
     def load_env_variable(self):
@@ -34,6 +39,15 @@ class Settings:
         Returns the path to the story documents.
         """
         return self._config.get("story_docs_path", "./app/story_docs")
+
+    def huggingface_token(self) -> str | None:
+        """
+        Returns the Hugging Face token.
+        """
+        return self._huggingface_token
+
+    def gemini_key(self) -> str | None:
+        return self._gemini_key
 
 
 settings = Settings()

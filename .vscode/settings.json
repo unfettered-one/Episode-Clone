@@ -10,7 +10,7 @@
     "editor.formatOnSave": true,
     "python.envFile": "${workspaceFolder}/.local/.env",
     "python.analysis.typeCheckingMode": "basic",
-    "python.testing.unittestEnabled": false,
+    "python.testing.unittestEnabled": true,
     "python.testing.pytestEnabled": true,
     "editor.trimAutoWhitespace": true
 }
