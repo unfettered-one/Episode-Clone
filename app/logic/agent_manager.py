@@ -12,7 +12,7 @@ class AgentManager:
         return cls._instance
 
     async def get_agent(self, story_id: str, session_id: str) -> StoryRAGAgent:
-        key = f"{story_id}__{session_id}"
+        key = f"{story_id}_{session_id}"
         if key not in self._agents:
             self._agents[key] = StoryRAGAgent(story_id)
         return self._agents[key]

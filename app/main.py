@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from apis.story_api import router as story_router
 from apis.service_state import router as service_state_router
@@ -8,6 +9,14 @@ app = FastAPI(
     description="API for Episode Clone",
     version="1.0.0",
 )
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # allow all for testing
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 app.include_router(story_router)
 app.include_router(service_state_router)

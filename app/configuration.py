@@ -46,8 +46,14 @@ class Settings:
         """
         return self._huggingface_token
 
-    def gemini_key(self) -> str | None:
+    def get_gemini_key(self) -> str | None:
         return self._gemini_key
+
+    def get_gemini_model(self) -> str:
+        """
+        Returns the Gemini model name.
+        """
+        return self._config["gemini_model_name"]
 
 
 settings = Settings()
