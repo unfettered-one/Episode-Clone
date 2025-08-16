@@ -34,4 +34,13 @@
         "Return to the scuff mark near the window."
     ]
 }
+``````json
+{
+    "narration": "Lena carefully took out a small, portable forensic kit from her bag. With a gloved hand, she gently dabbed a sterile swab onto the iridescent smudge on the locket. The metallic tang in the air seemed to cling to the silver, sharp and acrid. Under her magnifying glass, the tiny scratch looked less like a casual brush and more like an intentional mark, or the accidental slip of something pointed, like a fine tool.\n\nShe examined the swab. It wasn't a biological residue, nor a common household oil. Instead, it was a peculiar, almost crystalline substance, glinting faintly, unlike anything she’d encountered in a domestic setting. Coupled with the distinct metallic scent, it suggested a specific compound, one she couldn't immediately identify without proper lab analysis. It felt...industrial, yet utterly out of place in such an elegant, preserved room. This wasn't a simple oversight or a forgotten spill; it was a deliberate trace.\n\n\"This is not a simple smudge, James,\" she stated, her voice tight with revelation. \"And this scratch... it wasn't there by accident. Someone, or something, left this mark.\" She looked at James, whose eyes, for the briefest moment, seemed to flit towards the ornate, grandfather clock in the corner of the room, before returning to her, impassive as ever. The metallic tang, she noted, felt strongest near the clock, a faint, almost imperceptible hum emanating from within its ancient mechanism.",
+    "options": [
+        "Collect the locket as evidence for full lab analysis.",
+        "Examine the grandfather clock in the room more closely.",
+        "Ask James directly about the specific metallic substance."
+    ]
+}
 ```
