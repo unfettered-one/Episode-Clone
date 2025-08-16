@@ -1,4 +1,7 @@
 from logic.story_agent import StoryRAGAgent
+import logging
+
+LOGGER = logging.getLogger(__name__)
 
 
 class AgentManager:
@@ -12,7 +15,9 @@ class AgentManager:
         return cls._instance
 
     async def get_agent(self, story_id: str, session_id: str) -> StoryRAGAgent:
-        key = f"{story_id}_{session_id}"
+        key = f"{story_id}-{session_id}"
+        LOGGER.info("Retrieving agent for story_id: %s, session_id: %s, key: %s", story_id, session_id, key)
         if key not in self._agents:
-            self._agents[key] = StoryRAGAgent(story_id)
+            self._agents[key] = StoryRAGAgent(story_id, session_id)
+
         return self._agents[key]

@@ -9,7 +9,7 @@ class Story(BaseModel):
     id: str
     title: str
     description: str
-    embedding_index_path: str
+    story_path: str
 
 
 class Stories(BaseModel):

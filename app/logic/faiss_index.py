@@ -2,19 +2,15 @@ from langchain_community.vectorstores import FAISS
 from langchain_community.document_loaders import TextLoader
 
 from langchain_huggingface import HuggingFaceEmbeddings
-
+from langchain.schema import Document
 from langchain.text_splitter import CharacterTextSplitter
-from google import genai
+
+# from google import genai
 
 
 from pathlib import Path
-
-from langchain.schema import Document
-
 from configuration import settings
-
 import logging
-import asyncio
 
 
 LOGGER = logging.getLogger(__name__)
@@ -22,7 +18,6 @@ LOGGER = logging.getLogger(__name__)
 
 class FaissIndex:
     def __init__(self):
-        # self.client = genai.Client(api_key=settings.gemini_key())
         self.embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 
         self.story_docs_path = settings.story_docs_path()
@@ -30,7 +25,8 @@ class FaissIndex:
 
     async def create_faiss_index(self, story_id: str):
         all_docs = []
-        docs_path = self.story_docs_path + f"/{story_id}"
+        common_story_id = story_id.split("-")[0]
+        docs_path = self.story_docs_path + f"/{common_story_id}"
 
         for file in Path(docs_path).glob("*.txt"):
             loader = TextLoader(str(file))
@@ -44,27 +40,52 @@ class FaissIndex:
         db.save_local(self.vector_db_path + f"/{story_id}")
         print(f"Vector DB saved to {self.vector_db_path + f'/{story_id}'}")
 
-    async def _query_faiss_index(self, query: str, story_id: str, k: int = 5) -> FAISS:
+    async def add_to_faiss_index(self, story_id: str, text: str) -> None:
+        path_to_story_db = self.vector_db_path + f"/{story_id}"
+
+        # Load existing index
+        if Path(path_to_story_db).exists():
+            db = FAISS.load_local(path_to_story_db, self.embedding_model, allow_dangerous_deserialization=True)
+        else:
+            db = FAISS.from_texts([], self.embedding_model)
+
+        # Add new chunk
+        db.add_texts([text])
+
+        # Save updated index
+        db.save_local(path_to_story_db)
+
+    async def _query_faiss_index(
+        self,
+        story_id: str,
+    ) -> FAISS:
         """
         Searches the FAISS index for the most relevant documents given a user query.
         """
         path_to_story_db = self.vector_db_path + f"/{story_id}"
+
         if not Path(path_to_story_db).exists():
+
             await self.create_faiss_index(story_id)
         db = FAISS.load_local(path_to_story_db, embeddings=self.embedding_model, allow_dangerous_deserialization=True)
         return db
 
-    async def similarity_search(self, query: str, story_id: str, top_chunks: int = 5) -> list[Document]:
+    async def similarity_search(self, query: str, story_id: str, top_chunks: int | None) -> list[Document]:
         """
         Performs a similarity search on the FAISS index.
         """
-        db = await self._query_faiss_index(query, story_id)
-        retriever = db.as_retriever(search_type="similarity", search_kwargs={"k": top_chunks})
+        db = await self._query_faiss_index(
+            story_id=story_id,
+        )
+        params_for_search = {}
+        if top_chunks:
+            params_for_search["k"] = top_chunks
+        retriever = db.as_retriever(search_type="similarity", search_kwargs=params_for_search)
         return retriever.invoke(query)
 
     async def query_story_response(self, query: str, story_id: str):
         # Retrieve relevant documents
-        docs = await self.similarity_search(query, story_id)
+        docs = await self.similarity_search(query, story_id, None)
         context = "\n\n".join([doc.page_content for doc in docs])
 
         # prompt = (
