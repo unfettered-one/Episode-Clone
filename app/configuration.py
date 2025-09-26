@@ -55,5 +55,11 @@ class Settings:
         """
         return self._config["gemini_model_name"]
 
+    def get_base_url(self) -> str:
+        """
+        Returns the base URL for the application.
+        """
+        return self._config.get("base_url", "http://127.0.0.1:8000")
+
 
 settings = Settings()
