@@ -15,6 +15,7 @@ class Story(BaseModel):
     cover_image: str | None = None
     likes: str | None = "3200"
     views: str | None = "64000"
+    genre: str | None = "Drama"
 
 
 class Stories(BaseModel):
