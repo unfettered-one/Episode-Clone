@@ -39,7 +39,7 @@ class StoryRAGAgent:
         async for chunk in gemini.generate_stream_response(prompt):
             if chunk:
                 full_response.append(chunk)
-                print(chunk)
+                # print(chunk)
                 yield chunk
         full_response_str = "".join(full_response)
         await self._convert_ai_response_text_to_json(full_response_str)

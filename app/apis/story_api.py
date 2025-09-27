@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Body, HTTPException
-from fastapi.responses import ORJSONResponse
+from fastapi.responses import ORJSONResponse, StreamingResponse
 
 from story_registry import stories
 from models.story import Stories, Story, StoryPayload, StoryMetadata
@@ -53,8 +53,18 @@ async def get_story_by_id(story_id: str):
     )
 
 
-@router.post("/stories/next_stream")
+@router.post("/stories/next_stream", response_class=StreamingResponse)
 async def post_next_stream(payload: StoryPayload = Body(...)):
     agent = await agent_manager.get_agent(payload.story_id, payload.session_id)
-    result = await agent.generate_next(payload.user_choice)
-    return result
+
+    async def sse_generator():
+        try:
+            async for response_chunk in agent.generate_next_stream(payload.user_choice):
+                if response_chunk:
+                    text = str(response_chunk)
+                    yield text.strip().replace("```json", "").replace("```", "").strip()
+        except Exception as e:
+            # Emit an error event and end the stream gracefully
+            yield f"event: error\ndata: {str(e)}\n\n"
+
+    return StreamingResponse(sse_generator(), media_type="text/event-stream")
