@@ -34,3 +34,8 @@ class StoryPayload(BaseModel):
         "from_attributes": True,
         "extra": "forbid",
     }
+
+
+class StoryMetadata(BaseModel):
+    metadata: Story
+    detailedDescription: str

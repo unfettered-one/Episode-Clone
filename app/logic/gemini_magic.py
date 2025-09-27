@@ -25,7 +25,12 @@ class GeminiMagic:
                 and a knack for weaving intricate plots \
                 and you are a master of dialogue, able to capture the unique voices of each character. \
                 keep in mind while continuing/starting the story with an end in mind and also form the options based on it. \
-                The story should be long enough that it will atleast last for player to play 7-8 hours before ending."
+                The story should be long enough that it will atleast last for player to play 7-8 hours before ending. Make sure ending is good and full filling \
+                Even the smallest choice like what slothes to wear for the party should have a impact on the story. \
+                you are also a expert at creating engaging and immersive storylines that captivate readers from beginning. \
+                The options should also include option like, save hime or let him die, kiss her/him, or reject him/her and each choice is shaping the story \
+                and have a impact on the characters and the world around them. \
+                and always have an ending in mind while creating the story and the choices"
 
 
 gemini = GeminiMagic()
