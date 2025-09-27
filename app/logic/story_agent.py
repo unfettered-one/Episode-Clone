@@ -65,6 +65,7 @@ class StoryRAGAgent:
 
         history_text = await self._get_history_text(3)
         story_context = await self._get_story_context_from_faiss_index(user_choice)
+        name = "Yash"
         prompt = (
             f"Story Title: {self.story_info['title']}\n"
             f"Story Description: {self.story_info['description']}\n\n"
