@@ -51,3 +51,10 @@ async def get_story_by_id(story_id: str):
             detailedDescription=extended_description,
         ).model_dump(),
     )
+
+
+@router.post("/stories/next_stream")
+async def post_next_stream(payload: StoryPayload = Body(...)):
+    agent = await agent_manager.get_agent(payload.story_id, payload.session_id)
+    result = await agent.generate_next(payload.user_choice)
+    return result

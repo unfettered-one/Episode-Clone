@@ -33,6 +33,18 @@ class StoryRAGAgent:
         await self._update_story(self.user_story_id, response)
         return {"response": cleaned_response}
 
+    async def generate_next_stream(self, user_choice: str):
+        prompt = await self._generate_prompt_for_agent(user_choice)
+        full_response = []
+        async for chunk in gemini.generate_stream_response(prompt):
+            if chunk:
+                full_response.append(chunk)
+                print(chunk)
+                yield chunk
+        full_response_str = "".join(full_response)
+        await self._convert_ai_response_text_to_json(full_response_str)
+        await self._update_story(self.user_story_id, full_response_str)
+
     async def _convert_ai_response_text_to_json(self, ai_response: str) -> dict:
         # Convert the AI response text to JSON format
         cleaned = ai_response.strip().replace("```json", "").replace("```", "").strip()
@@ -92,6 +104,14 @@ class StoryRAGAgent:
             LOGGER.error("Error updating FAISS index: %s", e)
 
 
-# agent = StoryRAGAgent("mystery_mansion")
-# result = agent.generate_next("Go left into the forest")
+# agent = StoryRAGAgent("mystery_mansion",'mystery_mansion')
+# result =agent.generate_next_stream("begin the story")
 # print(result)  # Example usage, should be removed in production code
+# import asyncio
+
+# async def test_stream():
+#     agent = StoryRAGAgent("mystery_mansion", "mystery_mansion")
+#     async for chunk in agent.generate_next_stream("begin the story"):
+#         print(chunk)  # this will print chunks as they are generated
+
+# asyncio.run(test_stream())

@@ -10,7 +10,9 @@ class GeminiMagic:
     async def generate_response(self, prompt) -> str:
         response = self.client.models.generate_content(
             model=settings.get_gemini_model(),
-            config=genai.types.GenerateContentConfig(system_instruction=await self._generate_behaviour_of_model()),
+            config=genai.types.GenerateContentConfig(
+                system_instruction=await self._generate_behaviour_of_model()
+            ),
             contents=prompt,
         )
 
@@ -18,6 +20,16 @@ class GeminiMagic:
         if not text:
             raise ValueError("Response text from model is empty or not available.")
         return text
+
+    async def generate_stream_response(self, prompt):
+        async for chunck in await self.client.aio.models.generate_content_stream(
+            model=settings.get_gemini_model(),
+            config=genai.types.GenerateContentConfig(
+                system_instruction=await self._generate_behaviour_of_model()
+            ),
+            contents=prompt,
+        ):
+            yield chunck.text
 
     async def _generate_behaviour_of_model(self):
         return "you are a experienced story teller as well as best seller novel \
