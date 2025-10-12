@@ -9,6 +9,9 @@ RUN apt-get update && apt-get install -y \
     git \
     sudo \
     nano \
+    locales \
+    && sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen \
+    && locale-gen \
     && apt-get clean
 
 RUN echo "vscode ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
