@@ -18,7 +18,7 @@ LOGGER = logging.getLogger(__name__)
 
 class FaissIndex:
     def __init__(self):
-        self.embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+        self.embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2",show_progress=True)
 
         self.story_docs_path = settings.story_docs_path()
         self.vector_db_path = settings.vector_db_path()

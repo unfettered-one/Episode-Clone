@@ -20,7 +20,8 @@ app.add_middleware(
 )
 # determine assets dir reliably (project-root/assets)
 ASSETS_DIR = Path(__file__).resolve().parents[1] / "assets"
-app.mount("/assets", StaticFiles(directory=ASSETS_DIR), name="assets")
+app.mount("/assets", StaticFiles(directory=ASSETS_DIR),
+           name="assets")
 
 app.include_router(story_router)
 app.include_router(service_state_router)

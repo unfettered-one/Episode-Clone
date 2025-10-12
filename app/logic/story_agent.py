@@ -67,16 +67,17 @@ class StoryRAGAgent:
         story_context = await self._get_story_context_from_faiss_index(user_choice)
         name = "Yash"
         prompt = (
-            f"Story Title: {self.story_info['title']}\n"
-            f"Story Description: {self.story_info['description']}\n\n"
-            f"User History:\n{history_text}\n\n"
-            f"Relevant Story Context:\n{story_context}\n\n"
-            f"User chose: {user_choice}\n"
-            f"Generate next narration and options for the user.\n"
-            f"you know the Episode game that is very popular, make sure that you are following its style for options\n"
+            f"You are the Story Weaver. Remember your core principles: brief narration, 'Episode' style choices, and consequences. "
+            f"The story is '{self.story_info['title']}'.\n\n"
+            f"Recent History (Last 3 turns):\n{history_text}\n\n"
+            f"Current Situation & World Context:\n{story_context}\n\n"
+            f"In the last turn, I chose to: '{user_choice}'\n\n"
+            f"Based on my choice, continue the story. Generate a concise narration for the outcome and provide the next set of 3-4 personal, action-oriented choices.\n"
+            f"Output must be a single, valid JSON object and nothing else."
+            # This explicit structure reminder is highly effective.
             f"""Return the response strictly as JSON\n:
+                "narration": "Your brief and engaging narration of what happens next...",
             {{
-                "narration": "full narration text",
                 "options": ["Option 1", "Option 2", "Option 3"]
             }}"""
         )

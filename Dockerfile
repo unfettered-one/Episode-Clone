@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM python:3.14.0-alpine3.21
 
 # Install system dependencies (Terraform, curl, wget, git)
 RUN apt-get update && apt-get install -y \
