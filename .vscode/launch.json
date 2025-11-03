@@ -16,6 +16,9 @@
                 "0.0.0.0"
             ],
             "justMyCode": false,
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/app"
+            }
         }
     ]
 }
