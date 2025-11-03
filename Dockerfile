@@ -1,4 +1,4 @@
-FROM python:3.14.0-slim
+FROM python:3.12.0-slim
 
 # Install system dependencies (Terraform, curl, wget, git)
 RUN apt-get update && apt-get install -y \
