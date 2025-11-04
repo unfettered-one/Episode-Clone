@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from pydantic import BaseModel, Field
 
 
@@ -27,9 +29,9 @@ class Stories(BaseModel):
 
 
 class StoryPayload(BaseModel):
-    story_id: str = Field(alias="storyId")
-    user_choice: str = Field(alias="userChoice")
-    session_id: str = Field(alias="sessionId")
+    story_id: Annotated[str, Field(alias="storyId")]
+    user_choice: Annotated[str, Field(alias="userChoice")]
+    session_id: Annotated[str, Field(alias="sessionId")]
     model_config = {
         "from_attributes": True,
         "extra": "forbid",

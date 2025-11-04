@@ -16,8 +16,8 @@ setup(
         "langchain-huggingface",
         "langchain-openai==0.3.28",
         "huggingface_hub==0.34.1",
-        "google-genai==1.30.0"
-
+        "google-genai==1.30.0",
+        "uvloop==0.22.1",
     ],
     entry_points={
         "console_scripts": [],
