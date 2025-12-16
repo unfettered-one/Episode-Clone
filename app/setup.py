@@ -17,7 +17,8 @@ setup(
         "langchain-openai==0.3.28",
         "huggingface_hub==0.34.1",
         "google-genai==1.30.0",
-        "uvloop==0.22.1",
+        "PyJWT==2.10.1",
+        "errorhub==0.1.9",
     ],
     entry_points={
         "console_scripts": [],
