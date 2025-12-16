@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Body, HTTPException, Security
+from fastapi import APIRouter, Body, Security
 from fastapi.responses import ORJSONResponse
 
 from story_registry import stories
@@ -6,11 +6,15 @@ from models.story import Stories, Story, StoryPayload, StoryMetadata
 from app.security.auth import verify_access_token
 from logic.agent_manager import AgentManager
 
+from errorhub.decorator import api_exception_handler
+from errorhub.exceptions import NotFoundException
+from errorhub.models import ErrorSeverity
 
 router = APIRouter()
 
 
 @router.get("/stories")
+@api_exception_handler
 async def get_stories(token_data=Security(verify_access_token)):
 
     story_model = Stories(data=list(Story(**story) for story in stories.values()))
@@ -18,6 +22,7 @@ async def get_stories(token_data=Security(verify_access_token)):
 
 
 @router.post("/stories/next")
+@api_exception_handler
 async def post_next(payload: StoryPayload = Body(...), token_data=Security(verify_access_token)):
     agent_manager = AgentManager()
     agent = await agent_manager.get_agent(payload.story_id, payload.session_id)
@@ -26,13 +31,19 @@ async def post_next(payload: StoryPayload = Body(...), token_data=Security(verif
 
 
 @router.get("/stories/{story_id}")
+@api_exception_handler
 async def get_story_by_id(story_id: str, token_data=Security(verify_access_token)):
     """
     Get story metadata and extended description by ID.
     No narration or agent creation happens here.
     """
     if story_id not in stories:
-        raise HTTPException(status_code=404, detail="Story not found")
+        raise NotFoundException(
+            service="Episode Game",
+            severity=ErrorSeverity.LOW,
+            message="Story not found",
+            context={"story_id": story_id},
+        )
 
     story_info = Story(**stories[story_id])
 
