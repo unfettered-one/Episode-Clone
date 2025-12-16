@@ -17,11 +17,12 @@ class Settings:
 
     def __init__(self) -> None:
         self._config = {}
+        self.load_env_variable()
         self._openapi_key = os.getenv("OPENAI_API_KEY", None)
         self._huggingface_token = os.getenv("HUGGINGFACEHUB_API_TOKEN", None)
         self._gemini_key = os.getenv("GEMINI_API_KEY", None)
+
         self._config["jwt_secret_key"] = os.getenv("JWT_SECRET_KEY", None)
-        self.load_env_variable()
         temp_env = os.getenv("ENVIRONMENT")
         if temp_env is not None:
             if temp_env == "production":
