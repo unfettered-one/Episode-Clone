@@ -23,6 +23,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 # determine assets dir reliably (project-root/assets)
 ASSETS_DIR = Path(__file__).resolve().parents[1] / "assets"
 app.mount("/assets", StaticFiles(directory=ASSETS_DIR), name="assets")
