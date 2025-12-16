@@ -3,6 +3,7 @@ import json
 import logging
 
 from dotenv import load_dotenv
+from errorhub.models import EnvironmentEnum
 
 load_dotenv()
 
@@ -16,11 +17,22 @@ class Settings:
 
     def __init__(self) -> None:
         self._config = {}
+        self.load_env_variable()
         self._openapi_key = os.getenv("OPENAI_API_KEY", None)
         self._huggingface_token = os.getenv("HUGGINGFACEHUB_API_TOKEN", None)
         self._gemini_key = os.getenv("GEMINI_API_KEY", None)
 
-        self.load_env_variable()
+        self._config["jwt_secret_key"] = os.getenv("JWT_SECRET_KEY", None)
+        temp_env = os.getenv("ENVIRONMENT")
+        if temp_env is not None:
+            if temp_env == "production":
+                self._config["environment"] = EnvironmentEnum.PRODUCTION
+            elif temp_env == "staging":
+                self._config["environment"] = EnvironmentEnum.STAGING
+            else:
+                self._config["environment"] = EnvironmentEnum.DEVELOPMENT
+        else:
+            self._config["environment"] = EnvironmentEnum.DEVELOPMENT
 
     def load_env_variable(self):
         config_json = f'{os.getenv("CONFIG_PATH")}/config.json'
@@ -60,6 +72,30 @@ class Settings:
         Returns the base URL for the application.
         """
         return self._config.get("base_url", "http://127.0.0.1:8000")
+
+    def get_secret_key(self) -> str:
+        """
+        Returns the secret key for JWT.
+        """
+        return self._config["jwt_secret_key"]
+
+    def get_jwt_algorithm(self) -> str:
+        """
+        Returns the JWT algorithm.
+        """
+        return self._config.get("jwt_algorithm", "HS256")
+
+    def get_environment(self) -> EnvironmentEnum:
+        """
+        Returns the current environment.
+        """
+        return self._config["environment"]
+
+    def get_service_name(self) -> str:
+        """
+        Returns the service name.
+        """
+        return self._config.get("service_name", "Episode")
 
 
 settings = Settings()
