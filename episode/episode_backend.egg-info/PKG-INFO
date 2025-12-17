@@ -1,0 +1,15 @@
+Metadata-Version: 2.4
+Name: episode_backend
+Version: 0.1.0
+Requires-Dist: fastapi==0.116.1
+Requires-Dist: uvicorn==0.35.0
+Requires-Dist: faiss-cpu
+Requires-Dist: langchain==0.3.27
+Requires-Dist: tiktoken==0.9.0
+Requires-Dist: langchain-community==0.3.27
+Requires-Dist: sentence-transformers
+Requires-Dist: langchain-huggingface
+Requires-Dist: langchain-openai==0.3.28
+Requires-Dist: huggingface_hub==0.34.1
+Requires-Dist: google-genai==1.30.0
+Dynamic: requires-dist
