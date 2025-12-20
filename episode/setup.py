@@ -8,7 +8,7 @@ setup(
     install_requires=[
         "fastapi==0.116.1",
         "uvicorn==0.35.0",
-        "faiss-cpu",
+        "faiss-cpu==1.7.4",
         "langchain==0.3.27",
         "tiktoken==0.9.0",
         "langchain-community==0.3.27",
