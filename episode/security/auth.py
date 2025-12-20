@@ -3,7 +3,7 @@ import jwt
 from fastapi import Security
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
-from models.security import AuthenticatedUser
+from episode.models.security import AuthenticatedUser
 from episode.configuration import settings
 
 from errorhub.exceptions import (

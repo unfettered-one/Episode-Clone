@@ -44,13 +44,13 @@ class Settings:
         """
         Returns the path to the vector database.
         """
-        return self._config.get("vector_db_path", "./app/vector_db")
+        return self._config.get("vector_db_path", "./episode/vector_db")
 
     def story_docs_path(self) -> str:
         """
         Returns the path to the story documents.
         """
-        return self._config.get("story_docs_path", "./app/story_docs")
+        return self._config.get("story_docs_path", "./episode/story_docs")
 
     def huggingface_token(self) -> str | None:
         """

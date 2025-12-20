@@ -18,8 +18,8 @@ module "auth_service" {
     JWT_SECRET_KEY           = data.aws_ssm_parameter.jwt_secret.value
     GEMINI_API_KEY           = data.aws_ssm_parameter.GEMINI_API_KEY.value
     HUGGINGFACEHUB_API_TOKEN = data.aws_ssm_parameter.HUGGINGFACEHUB_API_TOKEN.value
-    story_docs_path          = "./app/story_docs"
-    vector_db_path           = "./app/vector_db"
+    story_docs_path          = "./${var.service_name}/story_docs"
+    vector_db_path           = "./${var.service_name}/vector_db"
     gemini_model_name        = "gemini-2.5-flash"
   }
 
