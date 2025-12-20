@@ -14,7 +14,15 @@ variable "service_name" {
   default = "episode"
 }
 
+variable "lock_table" {
+  type        = string
+  description = "name of the state lock dynamodb table"
+}
 
+variable "lock_bucket" {
+  type        = string
+  description = "name of the state lock s3 bucket"
+}
 variable "lambda_image_uri" {
   description = "Docker image URI for Lambda function"
   type        = string
