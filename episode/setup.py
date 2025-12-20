@@ -6,21 +6,25 @@ setup(
     packages=find_packages(),
     # pip install -e ./app --config-settings editable_mode=compat
     install_requires=[
+        # Web framework
         "fastapi==0.116.1",
         "uvicorn==0.35.0",
+        # Vector + numeric (Lambda-safe)
         "numpy==1.26.4",
         "faiss-cpu==1.7.4",
+        # LangChain core
         "langchain==0.3.27",
-        "tiktoken==0.9.0",
         "langchain-community==0.3.27",
-        "sentence-transformers",
-        "langchain-huggingface",
-        "langchain-openai==0.3.28",
-        "huggingface_hub==0.34.1",
+        # Gemini embeddings + generation
         "google-genai==1.30.0",
+        "langchain-google-genai",
+        # Tokenization (safe wheel)
+        "tiktoken==0.5.2",
+        # Auth / runtime
         "PyJWT==2.10.1",
-        "errorhub==0.1.9",
         "mangum==0.19.0",
+        # Logging / error tracking
+        "errorhub==0.1.9",
     ],
     entry_points={
         "console_scripts": [],

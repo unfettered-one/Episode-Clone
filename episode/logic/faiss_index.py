@@ -1,109 +1,131 @@
+from __future__ import annotations
+
+import logging
+from pathlib import Path
+from asyncio import to_thread
+from typing import Optional, List
+
 from langchain_community.vectorstores import FAISS
 from langchain_community.document_loaders import TextLoader
-
-from langchain_huggingface import HuggingFaceEmbeddings
 from langchain.schema import Document
 from langchain.text_splitter import CharacterTextSplitter
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 
-# from google import genai
-
-
-from pathlib import Path
 from episode.configuration import settings
-import logging
-
 
 LOGGER = logging.getLogger(__name__)
 
 
 class FaissIndex:
-    def __init__(self):
-        self.embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2",show_progress=True)
+    """
+    FAISS-based vector index using Gemini embeddings.
+    Lambda-safe (no local ML models).
+    """
 
-        self.story_docs_path = settings.story_docs_path()
-        self.vector_db_path = settings.vector_db_path()
+    def __init__(self) -> None:
+        
+        self.embedding_model = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
 
-    async def create_faiss_index(self, story_id: str):
-        all_docs = []
+        self.story_docs_path: str = settings.story_docs_path()
+        self.vector_db_path: str = settings.vector_db_path()
+
+    async def create_faiss_index(self, story_id: str) -> None:
+        """
+        Create a FAISS index from base story documents.
+        """
+        all_docs: List[Document] = []
+
         common_story_id = story_id.split("-")[0]
-        docs_path = self.story_docs_path + f"/{common_story_id}"
+        docs_path = Path(self.story_docs_path) / common_story_id
 
-        for file in Path(docs_path).glob("*.txt"):
+        if not docs_path.exists():
+            LOGGER.warning("Story docs path does not exist: %s", docs_path)
+            return
+
+        for file in docs_path.glob("*.txt"):
             loader = TextLoader(str(file))
             docs = loader.load()
             all_docs.extend(docs)
 
+        if not all_docs:
+            LOGGER.warning("No documents found for story_id=%s", story_id)
+            return
+
         splitter = CharacterTextSplitter(chunk_size=500, chunk_overlap=50)
         chunks = splitter.split_documents(all_docs)
 
-        db = FAISS.from_documents(chunks, self.embedding_model)
-        db.save_local(self.vector_db_path + f"/{story_id}")
-        print(f"Vector DB saved to {self.vector_db_path + f'/{story_id}'}")
+        # FAISS creation (sync → run in thread)
+        db = await to_thread(
+            FAISS.from_documents,
+            chunks,
+            self.embedding_model,
+        )
+
+        save_path = Path(self.vector_db_path) / story_id
+        db.save_local(str(save_path))
+
+        LOGGER.info("FAISS index created at %s", save_path)
 
     async def add_to_faiss_index(self, story_id: str, text: str) -> None:
-        path_to_story_db = self.vector_db_path + f"/{story_id}"
+        """
+        Add new text to an existing FAISS index.
+        """
+        path_to_story_db = Path(self.vector_db_path) / story_id
 
-        # Load existing index
-        if Path(path_to_story_db).exists():
-            db = FAISS.load_local(path_to_story_db, self.embedding_model, allow_dangerous_deserialization=True)
+        if path_to_story_db.exists():
+            db = FAISS.load_local(
+                str(path_to_story_db),
+                self.embedding_model,
+                allow_dangerous_deserialization=True,
+            )
         else:
+            # Create empty index if missing
             db = FAISS.from_texts([], self.embedding_model)
 
-        # Add new chunk
-        db.add_texts([text])
+        await to_thread(db.add_texts, [text])
+        db.save_local(str(path_to_story_db))
 
-        # Save updated index
-        db.save_local(path_to_story_db)
-
-    async def _query_faiss_index(
-        self,
-        story_id: str,
-    ) -> FAISS:
+    async def _query_faiss_index(self, story_id: str) -> FAISS:
         """
-        Searches the FAISS index for the most relevant documents given a user query.
+        Load or create FAISS index for a story.
         """
-        path_to_story_db = self.vector_db_path + f"/{story_id}"
+        path_to_story_db = Path(self.vector_db_path) / story_id
 
-        if not Path(path_to_story_db).exists():
-
+        if not path_to_story_db.exists():
             await self.create_faiss_index(story_id)
-        db = FAISS.load_local(path_to_story_db, embeddings=self.embedding_model, allow_dangerous_deserialization=True)
-        return db
 
-    async def similarity_search(self, query: str, story_id: str, top_chunks: int | None) -> list[Document]:
-        """
-        Performs a similarity search on the FAISS index.
-        """
-        db = await self._query_faiss_index(
-            story_id=story_id,
+        return FAISS.load_local(
+            str(path_to_story_db),
+            self.embedding_model,
+            allow_dangerous_deserialization=True,
         )
-        params_for_search = {}
+
+    async def similarity_search(
+        self,
+        query: str,
+        story_id: str,
+        top_chunks: Optional[int] = None,
+    ) -> List[Document]:
+        """
+        Perform similarity search on FAISS index.
+        """
+        db = await self._query_faiss_index(story_id)
+
+        search_kwargs = {}
         if top_chunks:
-            params_for_search["k"] = top_chunks
-        retriever = db.as_retriever(search_type="similarity", search_kwargs=params_for_search)
-        return retriever.invoke(query)
+            search_kwargs["k"] = top_chunks
 
-    async def query_story_response(self, query: str, story_id: str):
-        # Retrieve relevant documents
+        retriever = db.as_retriever(
+            search_type="similarity",
+            search_kwargs=search_kwargs,
+        )
+
+        # retriever.invoke is sync → move to thread
+        return await to_thread(retriever.invoke, query)
+
+    async def query_story_response(self, query: str, story_id: str) -> str:
+        """
+        Fetch relevant story context as plain text.
+        """
         docs = await self.similarity_search(query, story_id, None)
-        context = "\n\n".join([doc.page_content for doc in docs])
-
-        # prompt = (
-        #     f"Based on the following story context, answer the question.\n\n"
-        #     f"Context:\n{context}\n\n"
-        #     f"Question: {query}\n\n"
-        #     f"Answer:"
-        # )
-
-        # try:
-        #     response = self.client.models.generate_content(model="gemini-2.5-flash", contents=prompt)
-        #     return response.text if hasattr(response, "text") else str(response)
-        # except Exception as e:
-        #     LOGGER.error("Error during Gemini query: %s", e)
-        #     return str(e)
-
-
-# x = FaissIndex()
-# # y = x.similarity_search(story_id="mystery_mansion", query="Summarize the story.")
-# y = asyncio.run(x.query_story_response(story_id="mystery_mansion", query="Summarize the story."))
-# print(y)
+        return "\n\n".join(doc.page_content for doc in docs)
