@@ -1,4 +1,4 @@
-from configuration import settings
+from episode.configuration import settings
 
 from google import genai
 

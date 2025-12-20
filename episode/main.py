@@ -5,8 +5,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import JSONResponse
 
-from apis.story_api import router as story_router
-from apis.service_state import router as service_state_router
+from episode.apis.story_api import router as story_router
+from episode.apis.service_state import router as service_state_router
 
 from errorhub.exceptions import ErrorHubException
 from mangum import Mangum

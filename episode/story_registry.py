@@ -1,4 +1,4 @@
-from configuration import settings
+from episode.configuration import settings
 
 base_url = settings.get_base_url()
 stories = {

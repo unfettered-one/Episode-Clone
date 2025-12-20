@@ -1,4 +1,4 @@
-from logic.story_agent import StoryRAGAgent
+from episode.logic.story_agent import StoryRAGAgent
 import logging
 
 LOGGER = logging.getLogger(__name__)

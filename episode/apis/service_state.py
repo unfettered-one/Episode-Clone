@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Security
 from fastapi.responses import JSONResponse
 
-from app.security.auth import verify_access_token
+from episode.security.auth import verify_access_token
 
 router = APIRouter()
 

@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Body, Security
 from fastapi.responses import ORJSONResponse
 
-from story_registry import stories
-from models.story import Stories, Story, StoryPayload, StoryMetadata
-from app.security.auth import verify_access_token
-from logic.agent_manager import AgentManager
+from episode.story_registry import stories
+from episode.models.story import Stories, Story, StoryPayload, StoryMetadata
+from episode.security.auth import verify_access_token
+from episode.logic.agent_manager import AgentManager
 
 from errorhub.decorator import api_exception_handler
 from errorhub.exceptions import NotFoundException
