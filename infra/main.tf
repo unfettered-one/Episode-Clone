@@ -1,4 +1,4 @@
-module "auth_service" {
+module "episode" {
   source = "github.com/unfettered-one/Infra//core?ref=main"
 
   service_name = "episode"
