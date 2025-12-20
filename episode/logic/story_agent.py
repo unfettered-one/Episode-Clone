@@ -51,6 +51,8 @@ class StoryRAGAgent:
     async def _get_history_text(self, last_recent_choices: int) -> str:
         last_n_chats = await self._get_last_n_choices(last_recent_choices)
         return await self._convert_choices_to_history_text(last_n_chats)
+    
+    
 
     async def _get_story_context_from_faiss_index(self, user_choice: str) -> str:
         query = await self._common_query_to_ask_to_agent(user_choice)
@@ -64,13 +66,13 @@ class StoryRAGAgent:
     async def _generate_prompt_for_agent(self, user_choice: str) -> str:
 
         history_text = await self._get_history_text(3)
-        story_context = await self._get_story_context_from_faiss_index(user_choice)
+        # story_context = await self._get_story_context_from_faiss_index(user_choice)
         name = "Yash"
         prompt = (
             f"You are the Story Weaver. Remember your core principles: brief narration, 'Episode' style choices, and consequences. "
             f"The story is '{self.story_info['title']}'.\n\n"
             f"Recent History (Last 3 turns):\n{history_text}\n\n"
-            f"Current Situation & World Context:\n{story_context}\n\n"
+            # f"Current Situation & World Context:\n{story_context}\n\n"
             f"In the last turn, I chose to: '{user_choice}'\n\n"
             f"Based on my choice, continue the story. Generate a concise narration for the outcome and provide the next set of 3-4 personal, action-oriented choices.\n"
             f"Output must be a single, valid JSON object and nothing else."

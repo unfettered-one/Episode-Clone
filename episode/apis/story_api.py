@@ -25,7 +25,7 @@ async def get_stories(token_data=Security(verify_access_token)):
 @api_exception_handler
 async def post_next(payload: StoryPayload = Body(...), token_data=Security(verify_access_token)):
     agent_manager = AgentManager()
-    agent = await agent_manager.get_agent(payload.story_id, payload.session_id)
+    agent = await agent_manager.get_agent(payload.story_id, token_data.user_id)
     result = await agent.generate_next(payload.user_choice)
     return result
 
