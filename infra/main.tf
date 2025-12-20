@@ -21,6 +21,7 @@ module "episode" {
     story_docs_path          = "./${var.service_name}/story_docs"
     vector_db_path           = "./${var.service_name}/vector_db"
     gemini_model_name        = "gemini-2.5-flash"
+    base_url                 = data.aws_ssm_parameter.episode_base_url.value
   }
 
   create_http_api = false

@@ -12,3 +12,8 @@ data "aws_ssm_parameter" "HUGGINGFACEHUB_API_TOKEN" {
   name            = "HUGGINGFACEHUB_API_TOKEN"
   with_decryption = true
 }
+
+data "aws_ssm_parameter" "episode_base_url" {
+  name            = "episode_base_url"
+  with_decryption = true
+}
