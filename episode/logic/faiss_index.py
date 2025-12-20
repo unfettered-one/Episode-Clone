@@ -9,7 +9,7 @@ from langchain.text_splitter import CharacterTextSplitter
 
 
 from pathlib import Path
-from configuration import settings
+from episode.configuration import settings
 import logging
 
 

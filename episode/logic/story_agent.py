@@ -1,12 +1,12 @@
 import json
 import logging
 
-from logic.faiss_index import FaissIndex
-from logic.gemini_magic import gemini
+from episode.logic.faiss_index import FaissIndex
+from episode.logic.gemini_magic import gemini
 
-from utils.text_manager import text_file_manager
-from story_registry import stories
-from configuration import settings
+from episode.utils.text_manager import text_file_manager
+from episode.story_registry import stories
+from episode.configuration import settings
 
 LOGGER = logging.getLogger(__name__)
 

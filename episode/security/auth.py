@@ -4,7 +4,7 @@ from fastapi import Security
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 from models.security import AuthenticatedUser
-from configuration import settings
+from episode.configuration import settings
 
 from errorhub.exceptions import (
     UnauthorizedException,
