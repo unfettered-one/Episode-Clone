@@ -25,6 +25,8 @@ setup(
         "mangum==0.19.0",
         # Logging / error tracking
         "errorhub==0.1.9",
+        #aws sdk
+        "boto3==1.42.4",
     ],
     entry_points={
         "console_scripts": [],

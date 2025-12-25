@@ -24,6 +24,8 @@ class Settings:
         self._config["gemini_key"] = self._gemini_key
         self._config["base_url"] = os.getenv("base_url")
         self._config["jwt_secret_key"] = os.getenv("JWT_SECRET_KEY", None)
+        self._config["dynamodb_table_name"] = os.getenv("DYNAMODB_TABLE_NAME", "episode-story-sessions")
+        self._config["aws_region"] = os.getenv("AWS_REGION", "us-east-1")
         temp_env = os.getenv("ENVIRONMENT")
         if temp_env is not None:
             if temp_env == "production":
@@ -59,8 +61,9 @@ class Settings:
         """
         return self._huggingface_token
 
-    def get_gemini_key(self) -> str :
+    def get_gemini_key(self) -> str:
         return self._config["gemini_key"]
+
     def get_gemini_model(self) -> str:
         """
         Returns the Gemini model name.
@@ -96,6 +99,18 @@ class Settings:
         Returns the service name.
         """
         return self._config.get("service_name", "Episode")
+
+    def get_dynamodb_table_name(self) -> str:
+        """
+        Returns the DynamoDB table name for story sessions.
+        """
+        return self._config.get("dynamodb_table_name", "episode-story-sessions")
+
+    def get_aws_region(self) -> str:
+        """
+        Returns the AWS region.
+        """
+        return self._config.get("aws_region", "us-east-1")
 
 
 settings = Settings()

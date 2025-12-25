@@ -1,3 +1,5 @@
+## Deprecated module when dynamoDb is used for story storage
+
 from pathlib import Path
 import logging
 
