@@ -20,7 +20,8 @@ class Settings:
         # self.load_env_variable()
         self._openapi_key = os.getenv("OPENAI_API_KEY", None)
         self._huggingface_token = os.getenv("HUGGINGFACEHUB_API_TOKEN", None)
-        self._gemini_key = os.getenv("GEMINI_API_KEY", None)
+        self._gemini_key = os.getenv("GEMINI_API_KEY", "")
+        self._config["gemini_key"] = self._gemini_key
         self._config["base_url"] = os.getenv("base_url")
         self._config["jwt_secret_key"] = os.getenv("JWT_SECRET_KEY", None)
         temp_env = os.getenv("ENVIRONMENT")
@@ -58,14 +59,13 @@ class Settings:
         """
         return self._huggingface_token
 
-    def get_gemini_key(self) -> str | None:
-        return self._gemini_key
-
+    def get_gemini_key(self) -> str :
+        return self._config["gemini_key"]
     def get_gemini_model(self) -> str:
         """
         Returns the Gemini model name.
         """
-        return self._config["gemini_model_name"]
+        return self._config.get("gemini_model_name", "gemini-2.5-flash")
 
     def get_base_url(self) -> str:
         """

@@ -25,6 +25,44 @@ class TextFileManager:
         except Exception as e:
             raise RuntimeError(f"Error appending to text file: {e}")
 
+    async def read_text_file(self, path: str) -> str:
+        """
+        Read entire text file content.
+        Useful for retrieving story progression history.
+        """
+        file_path = Path(path)
+        if not await self._check_if_file_exists(file_path):
+            LOGGER.warning("File does not exist: %s", path)
+            return ""
+
+        try:
+            with file_path.open("r", encoding="utf-8") as file:
+                return file.read()
+        except Exception as e:
+            raise RuntimeError(f"Error reading text file: {e}")
+
+    async def get_last_n_entries(self, path: str, n: int, separator: str = "\n\n") -> list[str]:
+        """
+        Get last N entries from a text file.
+        Useful for retrieving recent story turns.
+
+        Args:
+            path: Path to text file
+            n: Number of entries to retrieve
+            separator: String that separates entries (default: double newline)
+
+        Returns:
+            List of last N entries
+        """
+        content = await self.read_text_file(path)
+        if not content:
+            return []
+
+        entries = content.split(separator)
+        # Filter out empty entries
+        entries = [e.strip() for e in entries if e.strip()]
+        return entries[-n:] if len(entries) >= n else entries
+
     async def _check_if_file_exists(self, path: Path) -> bool:
         """Check if a file exists."""
         return path.is_file()

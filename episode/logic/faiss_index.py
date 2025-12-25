@@ -5,6 +5,7 @@ from pathlib import Path
 from asyncio import to_thread
 from typing import Optional, List
 
+from pydantic import SecretStr
 from langchain_community.vectorstores import FAISS
 from langchain_community.document_loaders import TextLoader
 from langchain.schema import Document
@@ -12,6 +13,7 @@ from langchain.text_splitter import CharacterTextSplitter
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 
 from episode.configuration import settings
+from errorhub.exceptions import InternalServerErrorException
 
 LOGGER = logging.getLogger(__name__)
 
@@ -23,8 +25,11 @@ class FaissIndex:
     """
 
     def __init__(self) -> None:
-        
-        self.embedding_model = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+
+        # Use text-embedding-004 for paid tier (better than embedding-001)
+        self.embedding_model = GoogleGenerativeAIEmbeddings(
+            model="models/text-embedding-004", google_api_key=SecretStr(settings.get_gemini_key())
+        )
 
         self.story_docs_path: str = settings.story_docs_path()
         self.vector_db_path: str = settings.vector_db_path()
@@ -51,7 +56,8 @@ class FaissIndex:
             LOGGER.warning("No documents found for story_id=%s", story_id)
             return
 
-        splitter = CharacterTextSplitter(chunk_size=500, chunk_overlap=50)
+        # Use larger chunks to avoid splitting and reduce embedding API calls
+        splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
         chunks = splitter.split_documents(all_docs)
 
         # FAISS creation (sync → run in thread)
@@ -87,12 +93,17 @@ class FaissIndex:
 
     async def _query_faiss_index(self, story_id: str) -> FAISS:
         """
-        Load or create FAISS index for a story.
+        Load FAISS index for a story.
+        Note: Vector DB must be pre-built using build_vector_db.py script.
+        Does NOT auto-create to avoid quota issues during gameplay.
         """
         path_to_story_db = Path(self.vector_db_path) / story_id
 
         if not path_to_story_db.exists():
-            await self.create_faiss_index(story_id)
+            raise InternalServerErrorException(
+                service="Episode",
+                message=f"Vector DB for story_id='{story_id}' not found. Please build it first.",
+            )
 
         return FAISS.load_local(
             str(path_to_story_db),
@@ -108,12 +119,14 @@ class FaissIndex:
     ) -> List[Document]:
         """
         Perform similarity search on FAISS index.
+        Retrieves most relevant story folklore chunks.
         """
         db = await self._query_faiss_index(story_id)
 
-        search_kwargs = {}
-        if top_chunks:
-            search_kwargs["k"] = top_chunks
+        # Default to 4 chunks if not specified (balanced context vs noise)
+        k = top_chunks if top_chunks else 4
+
+        search_kwargs = {"k": k}
 
         retriever = db.as_retriever(
             search_type="similarity",
