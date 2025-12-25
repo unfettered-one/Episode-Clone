@@ -1,0 +1,27 @@
+name: "Deploy episode game"
+
+on:
+  push:
+    branches:
+      # - "**"
+      - "main"
+
+jobs:
+  deploy:
+    permissions:
+      id-token: write
+      contents: read
+      packages: write
+    uses: unfettered-one/Infra/.github/workflows/main.yml@main
+    with:
+      role_arn: "arn:aws:iam::815817733987:role/terraform-deploy-role-dev"
+      aws_region: "ap-south-1"
+      working_directory: "infra"
+      lambda_code_path: "episode"
+      build_image: true
+      lambda_handler: "episode.main.mangum_handler"
+      # branch_name: "feat/lambda-url" #TODO remove after testing
+      service_name: "episode"
+      stage: dev
+      main_file: "main.py"
+    secrets: inherit

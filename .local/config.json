@@ -1,6 +1,6 @@
 {
-    "story_docs_path": "./app/story_docs",
-    "vector_db_path": "./app/vector_db",
+    "story_docs_path": "./episode/story_docs",
+    "vector_db_path": "./episode/vector_db",
     "gemini_model_name": "gemini-2.5-flash",
     "base_url": "http://127.0.0.1:8000"
 }

@@ -43,12 +43,12 @@ If inside a venv, `$VIRTUAL_ENV` will show the path to your `.venv` directory, a
 1. Create and activate the virtual environment (see above)
 2. Install dependencies:
    ```bash
-   pip install -e ./app
+   pip install -e ./episode
    ```
 3. Run the application:
    ```bash
-   cd app
-   uvicorn main:app --reload
+   cd episode
+   uvicorn main:episode --reload
    ```
 
 ## Development
