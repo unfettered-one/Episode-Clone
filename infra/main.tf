@@ -1,5 +1,5 @@
 module "episode" {
-  source = "github.com/unfettered-one/Infra//core?ref=main"
+  source = "github.com/unfettered-one/Infra//core?ref=fix/dynamo-sk"
 
   service_name = "episode"
   stage        = var.stage
@@ -24,6 +24,8 @@ module "episode" {
     base_url                 = data.aws_ssm_parameter.episode_base_url.value
   }
 
-  create_http_api = false
-  enable_dynamodb = false
+  create_http_api     = false
+  enable_dynamodb     = true
+  dynamodb_table_name = "${var.service_name}-${var.stage}-story-sessions"
+  sort_key            = true
 }
