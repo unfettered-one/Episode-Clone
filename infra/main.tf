@@ -1,5 +1,5 @@
 module "episode" {
-  source = "github.com/unfettered-one/Infra//core?ref=fix/dynamo-sk"
+  source = "github.com/unfettered-one/Infra//core?ref=main"
 
   service_name = "episode"
   stage        = var.stage
@@ -22,6 +22,7 @@ module "episode" {
     vector_db_path           = "./${var.service_name}/vector_db"
     gemini_model_name        = "gemini-2.5-flash"
     base_url                 = data.aws_ssm_parameter.episode_base_url.value
+    DYNAMODB_TABLE_NAME      = "${var.service_name}-${var.stage}-story-sessions"
   }
 
   create_http_api     = false
