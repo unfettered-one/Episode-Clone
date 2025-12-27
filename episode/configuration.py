@@ -20,6 +20,7 @@ class Settings:
         # self.load_env_variable()
         self._openapi_key = os.getenv("OPENAI_API_KEY", None)
         self._huggingface_token = os.getenv("HUGGINGFACEHUB_API_TOKEN", None)
+        self._config["gemini_model_name"]=os.getenv("gemini_model_name",None)
         self._gemini_key = os.getenv("GEMINI_API_KEY", "")
         self._config["gemini_key"] = self._gemini_key
         self._config["base_url"] = os.getenv("base_url")
