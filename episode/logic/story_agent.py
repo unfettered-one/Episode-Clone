@@ -1,5 +1,6 @@
 import json
 import logging
+import re
 
 from episode.logic.faiss_index import FaissIndex
 from episode.logic.gemini_magic import gemini
@@ -48,10 +49,66 @@ class StoryRAGAgent:
         return {"response": cleaned_response}
 
     async def _convert_ai_response_text_to_json(self, ai_response: str) -> dict:
-        # Convert the AI response text to JSON format
+        # Clean the AI response
         cleaned = ai_response.strip().replace("```json", "").replace("```", "").strip()
-        json_response = json.loads(cleaned)
-        return json_response
+
+        # First, try direct parsing
+        try:
+            return json.loads(cleaned)
+        except json.JSONDecodeError:
+            pass
+
+        # Try to extract JSON using regex
+        json_match = re.search(r"\{.*\}", cleaned, re.DOTALL)
+        if json_match:
+            potential_json = json_match.group(0)
+            try:
+                return json.loads(potential_json)
+            except json.JSONDecodeError:
+                pass
+
+        # If still not parsable, try to repair common issues
+        repaired = self._repair_json(cleaned)
+        if repaired:
+            try:
+                return json.loads(repaired)
+            except json.JSONDecodeError:
+                pass
+
+        # Last resort: treat as narration
+        LOGGER.warning(f"AI response could not be made JSON parsable, treating as narration. Response: {ai_response}")
+        return {"narration": cleaned, "options": ["Continue the story", "Make a different choice", "Restart"]}
+
+    def _repair_json(self, text: str) -> str | None:
+        """
+        Attempt to repair common JSON formatting issues.
+        """
+        # Remove any leading/trailing non-JSON text
+        text = text.strip()
+
+        # If it starts with text before {, try to find the {
+        start = text.find("{")
+        if start != -1:
+            text = text[start:]
+
+        # If it ends with text after }, try to find the }
+        end = text.rfind("}")
+        if end != -1:
+            text = text[: end + 1]
+
+        # Fix common issues: ensure keys are quoted
+        # This is a simple fix for unquoted keys
+        text = re.sub(r"(\w+):", r'"\1":', text)
+
+        # Fix single quotes to double quotes
+        text = text.replace("'", '"')
+
+        # Try to validate if it's now valid JSON
+        try:
+            json.loads(text)
+            return text
+        except json.JSONDecodeError:
+            return None
 
     async def _get_last_n_turns_from_db(self, n: int) -> list[dict]:
         """
