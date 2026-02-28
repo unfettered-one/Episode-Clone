@@ -5,13 +5,12 @@ from pathlib import Path
 from asyncio import to_thread
 from typing import Optional, List
 
-from pydantic import SecretStr
 from langchain_community.vectorstores import FAISS
 from langchain_community.document_loaders import TextLoader
-from langchain.schema import Document
+from langchain_core.documents import Document
 from langchain.text_splitter import CharacterTextSplitter
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
 
+from episode.logic.gemini_embeddings import GeminiEmbeddings
 from episode.configuration import settings
 from errorhub.exceptions import InternalServerErrorException
 
@@ -25,10 +24,10 @@ class FaissIndex:
     """
 
     def __init__(self) -> None:
-
-        # Use text-embedding-004 for paid tier (better than embedding-001)
-        self.embedding_model = GoogleGenerativeAIEmbeddings(
-            model="models/text-embedding-004", google_api_key=SecretStr(settings.get_gemini_key())
+        # Use the new GeminiEmbeddings class with google-genai SDK
+        self.embedding_model = GeminiEmbeddings(
+            api_key=settings.get_gemini_key(),
+            model="gemini-embedding-001",  # Google's embedding model
         )
 
         self.story_docs_path: str = settings.story_docs_path()

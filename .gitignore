@@ -5,6 +5,7 @@ episode/episode_backend.egg-info/SOURCES.txt
 episode/episode_backend.egg-info/top_level.txt
 __pycache__/
 .local/.env
+.ai
 *.venv*
 episode/build/*
 episode/build

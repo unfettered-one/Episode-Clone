@@ -54,3 +54,5 @@ If inside a venv, `$VIRTUAL_ENV` will show the path to your `.venv` directory, a
 ## Development
 
 This project runs in a dev container. See `.devcontainer/devcontainer.json` for configuration details.
+
+architect → developer → tester → reviewer → done
