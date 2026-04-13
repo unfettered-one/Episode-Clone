@@ -11,3 +11,4 @@ episode/build/*
 episode/build
 episode/episode_backend.egg-info
 episode/build/lib/apis/story_api.py
+.srclight/
